@@ -23,6 +23,11 @@ public class AbstractArtDrawing {
 
         for (Line line : lines) {
             drawLine(line, surface);
+        }
+
+        drawTriangleSegments(surface, lines);
+
+        for (Line line : lines) {
             drawMiddlePoint(line, surface);
         }
 
@@ -54,6 +59,56 @@ public class AbstractArtDrawing {
                 }
             }
         }
+    }
+
+    private void drawTriangleSegments(DrawSurface surface, Line[] lines) {
+        for (int i = 0; i < lines.length; i++) {
+            for (int j = i + 1; j < lines.length; j++) {
+                Point firstIntersection = lines[i].intersectionWith(lines[j]);
+                if (firstIntersection == null) {
+                    continue;
+                }
+
+                for (int k = j + 1; k < lines.length; k++) {
+                    Point secondIntersection = lines[i].intersectionWith(lines[k]);
+                    Point thirdIntersection = lines[j].intersectionWith(lines[k]);
+
+                    if (formsTriangle(firstIntersection, secondIntersection, thirdIntersection)) {
+                        drawSegment(surface, firstIntersection, secondIntersection, Color.GREEN);
+                        drawSegment(surface, firstIntersection, thirdIntersection, Color.GREEN);
+                        drawSegment(surface, secondIntersection, thirdIntersection, Color.GREEN);
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean formsTriangle(Point first, Point second, Point third) {
+        if (first == null || second == null || third == null) {
+            return false;
+        }
+
+        if (first.distance(second) < Point.EPSILON
+                || first.distance(third) < Point.EPSILON
+                || second.distance(third) < Point.EPSILON) {
+            return false;
+        }
+
+        double areaTwice = Math.abs(
+                first.getX() * (second.getY() - third.getY())
+                        + second.getX() * (third.getY() - first.getY())
+                        + third.getX() * (first.getY() - second.getY()));
+
+        return areaTwice > Point.EPSILON;
+    }
+
+    private void drawSegment(DrawSurface surface, Point start, Point end, Color color) {
+        surface.setColor(color);
+        surface.drawLine(
+                (int) start.getX(),
+                (int) start.getY(),
+                (int) end.getX(),
+                (int) end.getY());
     }
 
     private void drawPoint(DrawSurface surface, Point point, Color color) {
