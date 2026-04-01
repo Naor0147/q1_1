@@ -1,4 +1,91 @@
-package PACKAGE_NAME;
+
+import biuoop.GUI;
+import biuoop.DrawSurface;
+
+import java.awt.Color;
+import java.util.Random;
 
 public class AbstractArtDrawing {
+
+    private static final int WIDTH = 800;
+    private static final int HEIGHT = 600;
+    private static final int NUMBER_OF_LINES = 10;
+    private static final int POINT_RADIUS = 3;
+    private static final String WINDOW_TITLE = "Random lines";
+
+    private final Random random = new Random();
+
+    public void drawRandomLines() {
+        GUI gui = new GUI(WINDOW_TITLE, WIDTH, HEIGHT);
+        DrawSurface surface = gui.getDrawSurface();
+
+        Line[] lines = createRandomLines();
+
+        for (Line line : lines) {
+            drawLine(line, surface);
+            drawMiddlePoint(line, surface);
+        }
+
+        drawIntersectionPoints(surface, lines);
+        gui.show(surface);
+    }
+
+    private Line[] createRandomLines() {
+        Line[] lines = new Line[NUMBER_OF_LINES];
+        for (int i = 0; i < NUMBER_OF_LINES; i++) {
+            lines[i] = generateRandomLine();
+        }
+        return lines;
+    }
+
+    private void drawMiddlePoint(Line line, DrawSurface surface) {
+        Point middle = line.middle();
+        drawPoint(surface, middle, Color.BLUE);
+    }
+
+    private void drawIntersectionPoints(DrawSurface surface, Line[] lines) {
+        for (int i = 0; i < lines.length; i++) {
+            for (int j = i + 1; j < lines.length; j++) {
+                if (lines[i].isIntersecting(lines[j])) {
+                    Point intersection = lines[i].intersectionWith(lines[j]);
+                    if (intersection != null) {
+                        drawPoint(surface, intersection, Color.RED);
+                    }
+                }
+            }
+        }
+    }
+
+    private void drawPoint(DrawSurface surface, Point point, Color color) {
+        surface.setColor(color);
+        surface.fillCircle((int) point.getX(), (int) point.getY(), POINT_RADIUS);
+    }
+
+    private void drawLine(Line line, DrawSurface surface) {
+        surface.setColor(Color.BLACK);
+        surface.drawLine(
+                (int) line.start().getX(),
+                (int) line.start().getY(),
+                (int) line.end().getX(),
+                (int) line.end().getY());
+    }
+
+    private Line generateRandomLine() {
+        int x1 = random.nextInt(WIDTH) + 1;
+        int y1 = random.nextInt(HEIGHT) + 1;
+        int x2 = random.nextInt(WIDTH) + 1;
+        int y2 = random.nextInt(HEIGHT) + 1;
+
+        while (x1 == x2 && y1 == y2) {
+            x2 = random.nextInt(WIDTH) + 1;
+            y2 = random.nextInt(HEIGHT) + 1;
+        }
+
+        return new Line(new Point(x1, y1), new Point(x2, y2));
+    }
+
+    public static void main(String[] args) {
+        AbstractArtDrawing example = new AbstractArtDrawing();
+        example.drawRandomLines();
+    }
 }
