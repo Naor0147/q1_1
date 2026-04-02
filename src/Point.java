@@ -2,7 +2,7 @@
 public class Point {
 
    private static final double EPSILON = 1e-6;
-   private static final double NULL_DISTANCE = -1;
+   private static final double THE_NULL_DISTANCE = -1;
 
    private final double x;
    private final double y;
@@ -10,8 +10,8 @@ public class Point {
    /**
     * Builds a point from x/y coordinates.
     *
-    * @param x x-coordinate.
-    * @param y y-coordinate.
+    * @param x the x-coordinate.
+    * @param y the y-coordinate.
     */
    public Point(double x, double y) {
       this.x = x;
@@ -27,7 +27,7 @@ public class Point {
     */
    public double distance(Point other) {
       if (other == null) {
-         return NULL_DISTANCE;
+         return THE_NULL_DISTANCE;
       }
       double dxx = this.x - other.x;
       double dyy = this.y - other.y;
@@ -42,7 +42,7 @@ public class Point {
     *         false otherwise.
     */
    public boolean equals(Point other) {
-      if (other == null) {
+      if (other == null) { // if the point isnt defined
          return false;
       }
       return Math.abs(this.x - other.x) < EPSILON && Math.abs(this.y - other.y) < EPSILON;
