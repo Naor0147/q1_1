@@ -20,7 +20,8 @@ public class AbstractArtDrawing {
     private final Random random = new Random();
 
     /**
-     * Opens a GUI window and draws random lines, their midpoints, intersections, and triangle segments.
+     * Opens a GUI window and draws random lines, their midpoints, intersections,
+     * and triangle segments.
      */
     public void drawRandomLines() {
         GUI gui = new GUI(WINDOW_TITLE, WIDTH, HEIGHT);
@@ -58,7 +59,7 @@ public class AbstractArtDrawing {
     /**
      * Draws the midpoint of a line in blue.
      *
-     * @param line line whose midpoint is drawn.
+     * @param line    line whose midpoint is drawn.
      * @param surface drawing surface.
      */
     private void drawMiddlePoint(Line line, DrawSurface surface) {
@@ -70,7 +71,7 @@ public class AbstractArtDrawing {
      * Draws all pairwise intersection points in red.
      *
      * @param surface drawing surface.
-     * @param lines lines to inspect.
+     * @param lines   lines to inspect.
      */
     private void drawIntersectionPoints(DrawSurface surface, Line[] lines) {
         for (int i = 0; i < lines.length; i++) {
@@ -86,10 +87,11 @@ public class AbstractArtDrawing {
     }
 
     /**
-     * Draws green triangle edges when three lines produce three distinct intersection points.
+     * Draws green triangle edges when three lines produce three distinct
+     * intersection points.
      *
      * @param surface drawing surface.
-     * @param lines candidate lines.
+     * @param lines   candidate lines.
      */
     private void drawTriangleSegments(DrawSurface surface, Line[] lines) {
         for (int i = 0; i < lines.length; i++) {
@@ -116,10 +118,11 @@ public class AbstractArtDrawing {
     /**
      * Checks whether three points form a non-degenerate triangle.
      *
-     * @param first first point.
+     * @param first  first point.
      * @param second second point.
-     * @param third third point.
-     * @return {@code true} when the points are distinct and non-collinear, {@code false} otherwise.
+     * @param third  third point.
+     * @return {@code true} when the points are distinct and non-collinear,
+     *         {@code false} otherwise.
      */
     private boolean formsTriangle(Point first, Point second, Point third) {
         if (first == null || second == null || third == null) {
@@ -144,9 +147,9 @@ public class AbstractArtDrawing {
      * Draws a segment between two points in the given color.
      *
      * @param surface drawing surface.
-     * @param start segment start.
-     * @param end segment end.
-     * @param color segment color.
+     * @param start   segment start.
+     * @param end     segment end.
+     * @param color   segment color.
      */
     private void drawSegment(DrawSurface surface, Point start, Point end, Color color) {
         surface.setColor(color);
@@ -161,8 +164,8 @@ public class AbstractArtDrawing {
      * Draws a filled point as a small circle.
      *
      * @param surface drawing surface.
-     * @param point point location.
-     * @param color fill color.
+     * @param point   point location.
+     * @param color   fill color.
      */
     private void drawPoint(DrawSurface surface, Point point, Color color) {
         surface.setColor(color);
@@ -172,7 +175,7 @@ public class AbstractArtDrawing {
     /**
      * Draws a line segment in black.
      *
-     * @param line line segment to draw.
+     * @param line    line segment to draw.
      * @param surface drawing surface.
      */
     private void drawLine(Line line, DrawSurface surface) {

@@ -12,7 +12,7 @@ public class Line {
      * Constructs a line segment from two points.
      *
      * @param start start point.
-     * @param end end point.
+     * @param end   end point.
      */
     public Line(Point start, Point end) {
         Point safeStart = start == null ? new Point(0, 0) : start;
@@ -74,7 +74,8 @@ public class Line {
      * Checks whether this line segment intersects another line segment.
      *
      * @param other another line segment.
-     * @return {@code true} if the segments intersect, including overlapping segments, {@code false} otherwise.
+     * @return {@code true} if the segments intersect, including overlapping
+     *         segments, {@code false} otherwise.
      */
     public boolean isIntersecting(Line other) {
         if (other == null) {
@@ -98,7 +99,8 @@ public class Line {
      *
      * @param other1 first line segment.
      * @param other2 second line segment.
-     * @return {@code true} if this line intersects at least one of the given lines, {@code false} otherwise.
+     * @return {@code true} if this line intersects at least one of the given lines,
+     *         {@code false} otherwise.
      */
     public boolean isIntersecting(Line other1, Line other2) {
         return this.isIntersecting(other1) || this.isIntersecting(other2);
@@ -108,7 +110,8 @@ public class Line {
      * Returns the intersection point of this line and another line.
      *
      * @param other another line segment.
-     * @return the intersection point if there is exactly one such point; otherwise {@code null}.
+     * @return the intersection point if there is exactly one such point; otherwise
+     *         {@code null}.
      */
     public Point intersectionWith(Line other) {
         if (other == null) {
@@ -156,7 +159,8 @@ public class Line {
     }
 
     /**
-     * Checks if this line and another line represent the same segment, regardless of direction.
+     * Checks if this line and another line represent the same segment, regardless
+     * of direction.
      *
      * @param other another line segment.
      * @return {@code true} if both segments are equal, {@code false} otherwise.
@@ -184,8 +188,9 @@ public class Line {
      * Checks whether a point lies on a given segment.
      *
      * @param point point to check.
-     * @param line segment on which to check.
-     * @return {@code true} if the point lies on the segment, {@code false} otherwise.
+     * @param line  segment on which to check.
+     * @return {@code true} if the point lies on the segment, {@code false}
+     *         otherwise.
      */
     private boolean isPointOnSegment(Point point, Line line) {
         if (point == null || line == null) {

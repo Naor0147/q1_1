@@ -23,7 +23,8 @@ public class Point {
     * Returns the distance from this point to another point.
     *
     * @param other another point.
-    * @return the Euclidean distance to {@code other}; {@link Double#NaN} if {@code other} is {@code null}.
+    * @return the Euclidean distance to {@code other}; {@link Double#NaN} if
+    *         {@code other} is {@code null}.
     */
    public double distance(Point other) {
       if (other == null) {
@@ -38,7 +39,8 @@ public class Point {
     * Checks if this point and the other point represent the same location.
     *
     * @param other another point.
-    * @return {@code true} if both coordinates are equal up to a small threshold, {@code false} otherwise.
+    * @return {@code true} if both coordinates are equal up to a small threshold,
+    *         {@code false} otherwise.
     */
    public boolean equals(Point other) {
       if (other == null) {
