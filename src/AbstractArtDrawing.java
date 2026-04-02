@@ -5,6 +5,9 @@ import biuoop.DrawSurface;
 import java.awt.Color;
 import java.util.Random;
 
+/**
+ * Draws random lines and visualizes their geometric properties.
+ */
 public class AbstractArtDrawing {
 
     private static final int WIDTH = 800;
@@ -12,9 +15,13 @@ public class AbstractArtDrawing {
     private static final int NUMBER_OF_LINES = 10;
     private static final int POINT_RADIUS = 3;
     private static final String WINDOW_TITLE = "Random lines";
+    private static final double EPSILON = 1e-6;
 
     private final Random random = new Random();
 
+    /**
+     * Opens a GUI window and draws random lines, their midpoints, intersections, and triangle segments.
+     */
     public void drawRandomLines() {
         GUI gui = new GUI(WINDOW_TITLE, WIDTH, HEIGHT);
         DrawSurface surface = gui.getDrawSurface();
@@ -35,6 +42,11 @@ public class AbstractArtDrawing {
         gui.show(surface);
     }
 
+    /**
+     * Creates an array of randomly generated line segments.
+     *
+     * @return array containing {@link #NUMBER_OF_LINES} random lines.
+     */
     private Line[] createRandomLines() {
         Line[] lines = new Line[NUMBER_OF_LINES];
         for (int i = 0; i < NUMBER_OF_LINES; i++) {
@@ -43,11 +55,23 @@ public class AbstractArtDrawing {
         return lines;
     }
 
+    /**
+     * Draws the midpoint of a line in blue.
+     *
+     * @param line line whose midpoint is drawn.
+     * @param surface drawing surface.
+     */
     private void drawMiddlePoint(Line line, DrawSurface surface) {
         Point middle = line.middle();
         drawPoint(surface, middle, Color.BLUE);
     }
 
+    /**
+     * Draws all pairwise intersection points in red.
+     *
+     * @param surface drawing surface.
+     * @param lines lines to inspect.
+     */
     private void drawIntersectionPoints(DrawSurface surface, Line[] lines) {
         for (int i = 0; i < lines.length; i++) {
             for (int j = i + 1; j < lines.length; j++) {
@@ -61,6 +85,12 @@ public class AbstractArtDrawing {
         }
     }
 
+    /**
+     * Draws green triangle edges when three lines produce three distinct intersection points.
+     *
+     * @param surface drawing surface.
+     * @param lines candidate lines.
+     */
     private void drawTriangleSegments(DrawSurface surface, Line[] lines) {
         for (int i = 0; i < lines.length; i++) {
             for (int j = i + 1; j < lines.length; j++) {
@@ -83,14 +113,22 @@ public class AbstractArtDrawing {
         }
     }
 
+    /**
+     * Checks whether three points form a non-degenerate triangle.
+     *
+     * @param first first point.
+     * @param second second point.
+     * @param third third point.
+     * @return {@code true} when the points are distinct and non-collinear, {@code false} otherwise.
+     */
     private boolean formsTriangle(Point first, Point second, Point third) {
         if (first == null || second == null || third == null) {
             return false;
         }
 
-        if (first.distance(second) < Point.EPSILON
-                || first.distance(third) < Point.EPSILON
-                || second.distance(third) < Point.EPSILON) {
+        if (first.distance(second) < EPSILON
+                || first.distance(third) < EPSILON
+                || second.distance(third) < EPSILON) {
             return false;
         }
 
@@ -99,9 +137,17 @@ public class AbstractArtDrawing {
                         + second.getX() * (third.getY() - first.getY())
                         + third.getX() * (first.getY() - second.getY()));
 
-        return areaTwice > Point.EPSILON;
+        return areaTwice > EPSILON;
     }
 
+    /**
+     * Draws a segment between two points in the given color.
+     *
+     * @param surface drawing surface.
+     * @param start segment start.
+     * @param end segment end.
+     * @param color segment color.
+     */
     private void drawSegment(DrawSurface surface, Point start, Point end, Color color) {
         surface.setColor(color);
         surface.drawLine(
@@ -111,11 +157,24 @@ public class AbstractArtDrawing {
                 (int) end.getY());
     }
 
+    /**
+     * Draws a filled point as a small circle.
+     *
+     * @param surface drawing surface.
+     * @param point point location.
+     * @param color fill color.
+     */
     private void drawPoint(DrawSurface surface, Point point, Color color) {
         surface.setColor(color);
         surface.fillCircle((int) point.getX(), (int) point.getY(), POINT_RADIUS);
     }
 
+    /**
+     * Draws a line segment in black.
+     *
+     * @param line line segment to draw.
+     * @param surface drawing surface.
+     */
     private void drawLine(Line line, DrawSurface surface) {
         surface.setColor(Color.BLACK);
         surface.drawLine(
@@ -125,6 +184,11 @@ public class AbstractArtDrawing {
                 (int) line.end().getY());
     }
 
+    /**
+     * Generates a random non-degenerate line segment inside the drawing bounds.
+     *
+     * @return random line segment.
+     */
     private Line generateRandomLine() {
         int x1 = random.nextInt(WIDTH) + 1;
         int y1 = random.nextInt(HEIGHT) + 1;
@@ -139,6 +203,11 @@ public class AbstractArtDrawing {
         return new Line(new Point(x1, y1), new Point(x2, y2));
     }
 
+    /**
+     * Program entry point.
+     *
+     * @param args command-line arguments.
+     */
     public static void main(String[] args) {
         AbstractArtDrawing example = new AbstractArtDrawing();
         example.drawRandomLines();
