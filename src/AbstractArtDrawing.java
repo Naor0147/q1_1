@@ -1,4 +1,3 @@
-
 import biuoop.GUI;
 import biuoop.DrawSurface;
 
@@ -6,7 +5,7 @@ import java.awt.Color;
 import java.util.Random;
 
 /**
- * Draws random lines and visualizes their geometric properties.
+ * Draws random line art and marks geometric stuff.
  */
 public class AbstractArtDrawing {
 
@@ -20,33 +19,33 @@ public class AbstractArtDrawing {
     private final Random random = new Random();
 
     /**
-     * Opens a GUI window and draws random lines, their midpoints, intersections,
-     * and triangle segments.
+     * Opens a GUI window and draws random lines, middle points,
+     * intersections, and triangle edges.
      */
     public void drawRandomLines() {
-        GUI gui = new GUI(WINDOW_TITLE, WIDTH, HEIGHT);
-        DrawSurface surface = gui.getDrawSurface();
+        GUI appGui = new GUI(WINDOW_TITLE, WIDTH, HEIGHT);
+        DrawSurface drawSrf = appGui.getDrawSurface();
 
-        Line[] lines = createRandomLines();
+        Line[] lnes = createRandomLines();
 
-        for (Line line : lines) {
-            drawLine(line, surface);
+        for (Line line : lnes) {
+            drawLine(line, drawSrf);
         }
 
-        drawTriangleSegments(surface, lines);
+        drawTriangleSegments(drawSrf, lnes);
 
-        for (Line line : lines) {
-            drawMiddlePoint(line, surface);
+        for (Line line : lnes) {
+            drawMiddlePoint(line, drawSrf);
         }
 
-        drawIntersectionPoints(surface, lines);
-        gui.show(surface);
+        drawIntersectionPoints(drawSrf, lnes);
+        appGui.show(drawSrf);
     }
 
     /**
-     * Creates an array of randomly generated line segments.
+     * Creates an array of random line segments.
      *
-     * @return array containing {@link #NUMBER_OF_LINES} random lines.
+     * @return array containing random lines.
      */
     private Line[] createRandomLines() {
         Line[] lines = new Line[NUMBER_OF_LINES];
@@ -63,8 +62,8 @@ public class AbstractArtDrawing {
      * @param surface drawing surface.
      */
     private void drawMiddlePoint(Line line, DrawSurface surface) {
-        Point middle = line.middle();
-        drawPoint(surface, middle, Color.BLUE);
+        Point midlePt = line.middle();
+        drawPoint(surface, midlePt, Color.BLUE);
     }
 
     /**
@@ -77,9 +76,9 @@ public class AbstractArtDrawing {
         for (int i = 0; i < lines.length; i++) {
             for (int j = i + 1; j < lines.length; j++) {
                 if (lines[i].isIntersecting(lines[j])) {
-                    Point intersection = lines[i].intersectionWith(lines[j]);
-                    if (intersection != null) {
-                        drawPoint(surface, intersection, Color.RED);
+                    Point intersctn = lines[i].intersectionWith(lines[j]);
+                    if (intersctn != null) {
+                        drawPoint(surface, intersctn, Color.RED);
                     }
                 }
             }
@@ -96,19 +95,19 @@ public class AbstractArtDrawing {
     private void drawTriangleSegments(DrawSurface surface, Line[] lines) {
         for (int i = 0; i < lines.length; i++) {
             for (int j = i + 1; j < lines.length; j++) {
-                Point firstIntersection = lines[i].intersectionWith(lines[j]);
-                if (firstIntersection == null) {
+                Point frstIntersct = lines[i].intersectionWith(lines[j]);
+                if (frstIntersct == null) {
                     continue;
                 }
 
                 for (int k = j + 1; k < lines.length; k++) {
-                    Point secondIntersection = lines[i].intersectionWith(lines[k]);
-                    Point thirdIntersection = lines[j].intersectionWith(lines[k]);
+                    Point secIntersct = lines[i].intersectionWith(lines[k]);
+                    Point thrdIntersct = lines[j].intersectionWith(lines[k]);
 
-                    if (formsTriangle(firstIntersection, secondIntersection, thirdIntersection)) {
-                        drawSegment(surface, firstIntersection, secondIntersection, Color.GREEN);
-                        drawSegment(surface, firstIntersection, thirdIntersection, Color.GREEN);
-                        drawSegment(surface, secondIntersection, thirdIntersection, Color.GREEN);
+                    if (formsTriangle(frstIntersct, secIntersct, thrdIntersct)) {
+                        drawSegment(surface, frstIntersct, secIntersct, Color.GREEN);
+                        drawSegment(surface, frstIntersct, thrdIntersct, Color.GREEN);
+                        drawSegment(surface, secIntersct, thrdIntersct, Color.GREEN);
                     }
                 }
             }
@@ -116,13 +115,13 @@ public class AbstractArtDrawing {
     }
 
     /**
-     * Checks whether three points form a non-degenerate triangle.
+     * Checks if three points form a real triangle.
      *
      * @param first  first point.
      * @param second second point.
      * @param third  third point.
-     * @return {@code true} when the points are distinct and non-collinear,
-     *         {@code false} otherwise.
+     * @return true when the points are distinct and not collinear,
+     *         false otherwise.
      */
     private boolean formsTriangle(Point first, Point second, Point third) {
         if (first == null || second == null || third == null) {
@@ -135,12 +134,12 @@ public class AbstractArtDrawing {
             return false;
         }
 
-        double areaTwice = Math.abs(
+        double areaTwce = Math.abs(
                 first.getX() * (second.getY() - third.getY())
                         + second.getX() * (third.getY() - first.getY())
                         + third.getX() * (first.getY() - second.getY()));
 
-        return areaTwice > EPSILON;
+        return areaTwce > EPSILON;
     }
 
     /**
@@ -188,7 +187,7 @@ public class AbstractArtDrawing {
     }
 
     /**
-     * Generates a random non-degenerate line segment inside the drawing bounds.
+     * Generates a random line segment inside drawing bounds.
      *
      * @return random line segment.
      */
@@ -212,7 +211,7 @@ public class AbstractArtDrawing {
      * @param args command-line arguments.
      */
     public static void main(String[] args) {
-        AbstractArtDrawing example = new AbstractArtDrawing();
-        example.drawRandomLines();
+        AbstractArtDrawing exmple = new AbstractArtDrawing();
+        exmple.drawRandomLines();
     }
 }

@@ -1,15 +1,14 @@
-/**
- * Represents a point in a two-dimensional Cartesian plane.
- */
+
 public class Point {
 
    private static final double EPSILON = 1e-6;
+   private static final double NULL_DISTANCE = -1;
 
    private final double x;
    private final double y;
 
    /**
-    * Constructs a point with the given coordinates.
+    * Builds a point from x/y coordinates.
     *
     * @param x x-coordinate.
     * @param y y-coordinate.
@@ -20,27 +19,27 @@ public class Point {
    }
 
    /**
-    * Returns the distance from this point to another point.
+    * Calculates distance from this point to another one.
     *
     * @param other another point.
-    * @return the Euclidean distance to {@code other}; {@link Double#NaN} if
-    *         {@code other} is {@code null}.
+    * @return the Euclidean distance to the other poinxt; returns NULL_DISTANCE
+    *         when the other point is null.
     */
    public double distance(Point other) {
       if (other == null) {
-         return Double.NaN;
+         return NULL_DISTANCE;
       }
-      double dx = this.x - other.x;
-      double dy = this.y - other.y;
-      return Math.sqrt(dx * dx + dy * dy);
+      double dxx = this.x - other.x;
+      double dyy = this.y - other.y;
+      return Math.sqrt(dxx * dxx + dyy * dyy);
    }
 
    /**
-    * Checks if this point and the other point represent the same location.
+    * Checks if two points are basically at same spot.
     *
     * @param other another point.
-    * @return {@code true} if both coordinates are equal up to a small threshold,
-    *         {@code false} otherwise.
+    * @return true if both coordinates are equal up to a small epsilon,
+    *         false otherwise.
     */
    public boolean equals(Point other) {
       if (other == null) {
@@ -50,18 +49,14 @@ public class Point {
    }
 
    /**
-    * Returns the x-coordinate.
-    *
-    * @return x-coordinate.
+    * @return the x-coordinate.
     */
    public double getX() {
       return this.x;
    }
 
    /**
-    * Returns the y-coordinate.
-    *
-    * @return y-coordinate.
+    * @return the y-coordinate.
     */
    public double getY() {
       return this.y;

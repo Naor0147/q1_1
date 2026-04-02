@@ -1,5 +1,5 @@
 /**
- * Represents a finite line segment between two points.
+ * Simple line segment between two points.
  */
 public class Line {
 
@@ -9,20 +9,21 @@ public class Line {
     private final Point end;
 
     /**
-     * Constructs a line segment from two points.
+     * Builds a line segment from two points.
+     * Tries to keep it valid even when one of the points is null.
      *
      * @param start start point.
      * @param end   end point.
      */
     public Line(Point start, Point end) {
-        Point safeStart = start == null ? new Point(0, 0) : start;
-        Point safeEnd = end == null ? safeStart : end;
-        this.start = safeStart;
-        this.end = safeEnd;
+        Point safeStrt = start == null ? new Point(0, 0) : start;
+        Point safeEdn = end == null ? safeStrt : end;
+        this.start = safeStrt;
+        this.end = safeEdn;
     }
 
     /**
-     * Constructs a line segment from start and end coordinates.
+     * Builds a line segment from raw coordinates.
      *
      * @param x1 x-coordinate of the start point.
      * @param y1 y-coordinate of the start point.
@@ -35,47 +36,39 @@ public class Line {
     }
 
     /**
-     * Returns the length of this line segment.
-     *
-     * @return segment length.
+     * @return the segment length.
      */
     public double length() {
         return this.start.distance(this.end);
     }
 
     /**
-     * Returns the midpoint of this line segment.
-     *
-     * @return midpoint between start and end.
+     * @return the midpoint of the segment.
      */
     public Point middle() {
         return new Point((this.start.getX() + this.end.getX()) / 2, (this.start.getY() + this.end.getY()) / 2);
     }
 
     /**
-     * Returns the start point.
-     *
-     * @return start point.
+     * @return the start point.
      */
     public Point start() {
         return this.start;
     }
 
     /**
-     * Returns the end point.
-     *
-     * @return end point.
+     * @return the end point.
      */
     public Point end() {
         return this.end;
     }
 
     /**
-     * Checks whether this line segment intersects another line segment.
+     * Checks if this segment intersects another one.
      *
      * @param other another line segment.
-     * @return {@code true} if the segments intersect, including overlapping
-     *         segments, {@code false} otherwise.
+     * @return true when they intersect (including overlap),
+     *         false otherwise.
      */
     public boolean isIntersecting(Line other) {
         if (other == null) {
@@ -84,8 +77,8 @@ public class Line {
         if (this.intersectionWith(other) != null) {
             return true;
         }
-        double determinant = getDeterminant(other);
-        if (Math.abs(determinant) < EPSILON) {
+        double determnt = getDeterminant(other);
+        if (Math.abs(determnt) < EPSILON) {
             return isPointOnSegment(this.end, other)
                     || isPointOnSegment(this.start, other)
                     || isPointOnSegment(other.start, this)
@@ -95,31 +88,31 @@ public class Line {
     }
 
     /**
-     * Checks whether this line intersects either of two given lines.
+     * Checks whether this line intersects both of two given lines.
      *
      * @param other1 first line segment.
      * @param other2 second line segment.
-     * @return {@code true} if this line intersects at least one of the given lines,
-     *         {@code false} otherwise.
+     * @return true if this line intersects both given lines,
+     *         false otherwise.
      */
     public boolean isIntersecting(Line other1, Line other2) {
-        return this.isIntersecting(other1) || this.isIntersecting(other2);
+        return this.isIntersecting(other1) && this.isIntersecting(other2);
     }
 
     /**
-     * Returns the intersection point of this line and another line.
+     * Finds the intersection point with another line segment.
      *
      * @param other another line segment.
-     * @return the intersection point if there is exactly one such point; otherwise
-     *         {@code null}.
+     * @return the intersection point when there is exactly one; otherwise
+     *         null. If they overlap with infinite points this returns null.
      */
     public Point intersectionWith(Line other) {
         if (other == null) {
             return null;
         }
 
-        double determinant = getDeterminant(other);
-        if (Math.abs(determinant) < EPSILON) {
+        double determnt = getDeterminant(other);
+        if (Math.abs(determnt) < EPSILON) {
             if (this.start.equals(other.start)
                     && !isPointOnSegment(this.end, other)
                     && !isPointOnSegment(other.end, this)) {
@@ -143,17 +136,17 @@ public class Line {
             return null;
         }
 
-        double tNum = (other.start().getX() - this.start.getX()) * (other.end().getY() - other.start().getY())
+        double tNumm = (other.start().getX() - this.start.getX()) * (other.end().getY() - other.start().getY())
                 - (other.start().getY() - this.start.getY()) * (other.end().getX() - other.start().getX());
-        double uNum = (other.start().getX() - this.start.getX()) * (this.end.getY() - this.start.getY())
+        double uNumm = (other.start().getX() - this.start.getX()) * (this.end.getY() - this.start.getY())
                 - (other.start().getY() - this.start.getY()) * (this.end.getX() - this.start.getX());
-        double t = tNum / determinant;
-        double u = uNum / determinant;
+        double t = tNumm / determnt;
+        double u = uNumm / determnt;
 
         if (t >= -EPSILON && t <= 1.0 + EPSILON && u >= -EPSILON && u <= 1.0 + EPSILON) {
-            double intersectionX = this.start.getX() + t * (this.end.getX() - this.start.getX());
-            double intersectionY = this.start.getY() + t * (this.end.getY() - this.start.getY());
-            return new Point(intersectionX, intersectionY);
+            double interX = this.start.getX() + t * (this.end.getX() - this.start.getX());
+            double interY = this.start.getY() + t * (this.end.getY() - this.start.getY());
+            return new Point(interX, interY);
         }
         return null;
     }
@@ -163,7 +156,7 @@ public class Line {
      * of direction.
      *
      * @param other another line segment.
-     * @return {@code true} if both segments are equal, {@code false} otherwise.
+     * @return true if both segments are equal, false otherwise.
      */
     public boolean equals(Line other) {
         if (other == null) {
@@ -174,7 +167,7 @@ public class Line {
     }
 
     /**
-     * Computes the determinant used in intersection calculations.
+     * Helper that computes determinant for intersection math.
      *
      * @param other another line segment.
      * @return determinant of the two segment direction vectors.
@@ -189,15 +182,15 @@ public class Line {
      *
      * @param point point to check.
      * @param line  segment on which to check.
-     * @return {@code true} if the point lies on the segment, {@code false}
+     * @return true if the point lies on the segment, false
      *         otherwise.
      */
     private boolean isPointOnSegment(Point point, Line line) {
         if (point == null || line == null) {
             return false;
         }
-        double d1 = point.distance(line.start());
-        double d2 = point.distance(line.end());
-        return Math.abs((d1 + d2) - line.length()) < EPSILON;
+        double dst1 = point.distance(line.start());
+        double dst2 = point.distance(line.end());
+        return Math.abs((dst1 + dst2) - line.length()) < EPSILON;
     }
 }

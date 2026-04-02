@@ -5,7 +5,7 @@ import java.util.Random;
 import java.awt.Color;
 
 /**
- * Demonstrates basic drawing using the biuoop GUI.
+ * Small demo for drawing with the biuoop GUI.
  */
 public class SimpleGuiExample {
 
