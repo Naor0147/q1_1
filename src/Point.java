@@ -1,4 +1,7 @@
 
+/**
+ * Represents a 2D point with x and y coordinates.
+ */
 public class Point {
 
    private static final double EPSILON = 1e-6;
