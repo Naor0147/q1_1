@@ -1,11 +1,10 @@
+import java.text.Normalizer;
 
 /**
  * Represents a 2D point with x and y coordinates.
  */
 public class Point {
 
-   private static final double EPSILON = 1e-6;
-   private static final double THE_NULL_DISTANCE = -1;
 
    private final double x;
    private final double y;
@@ -30,7 +29,7 @@ public class Point {
     */
    public double distance(Point other) {
       if (other == null) {
-         return THE_NULL_DISTANCE;
+         return GameConstants.THE_NULL_DISTANCE;
       }
       double dxx = this.x - other.x;
       double dyy = this.y - other.y;
@@ -48,7 +47,7 @@ public class Point {
       if (other == null) { // if the point isnt defined
          return false;
       }
-      return Math.abs(this.x - other.x) < EPSILON && Math.abs(this.y - other.y) < EPSILON;
+      return Math.abs(this.x - other.x) < GameConstants.EPSILON && Math.abs(this.y - other.y) < GameConstants.EPSILON;
    }
 
    /**
@@ -64,4 +63,8 @@ public class Point {
    public double getY() {
       return this.y;
    }
+
+
+   
+
 }

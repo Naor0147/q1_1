@@ -3,7 +3,7 @@
  */
 public class Line {
 
-    private static final double EPSILON = 1e-6;
+
 
     private final Point start;
     private final Point end;
@@ -16,8 +16,19 @@ public class Line {
      * @param end   end point.
      */
     public Line(Point start, Point end) {
-        Point safeStrt = start == null ? new Point(0, 0) : start;
-        Point safeEdn = end == null ? safeStrt : end;
+        Point safeStrt;
+        if (start == null) {
+            safeStrt = new Point(0, 0);
+        } else {
+            safeStrt = start;
+        }
+
+        Point safeEdn;
+        if (end == null) {
+            safeEdn = safeStrt;
+        } else {
+            safeEdn = end;
+        }
         this.start = safeStrt;
         this.end = safeEdn;
     }
@@ -78,7 +89,7 @@ public class Line {
             return true;
         }
         double determnt = getDeterminant(other);
-        if (Math.abs(determnt) < EPSILON) {
+        if (Math.abs(determnt) < GameConstants.EPSILON) {
             return isPointOnSegment(this.end, other)
                     || isPointOnSegment(this.start, other)
                     || isPointOnSegment(other.start, this)
@@ -111,8 +122,9 @@ public class Line {
             return null;
         }
 
+        //if the point are cloliner or parreal 
         double determnt = getDeterminant(other);
-        if (Math.abs(determnt) < EPSILON) {
+        if (Math.abs(determnt) < GameConstants.EPSILON) {
             if (this.start.equals(other.start)
                     && !isPointOnSegment(this.end, other)
                     && !isPointOnSegment(other.end, this)) {
@@ -136,6 +148,8 @@ public class Line {
             return null;
         }
 
+
+        // math forumal that check if intersction lies in the fintie line
         double tNumm = (other.start().getX() - this.start.getX()) * (other.end().getY() - other.start().getY())
                 - (other.start().getY() - this.start.getY()) * (other.end().getX() - other.start().getX());
         double uNumm = (other.start().getX() - this.start.getX()) * (this.end.getY() - this.start.getY())
@@ -143,7 +157,7 @@ public class Line {
         double t = tNumm / determnt;
         double u = uNumm / determnt;
 
-        if (t >= -EPSILON && t <= 1.0 + EPSILON && u >= -EPSILON && u <= 1.0 + EPSILON) {
+        if (t >= -GameConstants.EPSILON && t <= 1.0 + GameConstants.EPSILON && u >= -GameConstants.EPSILON && u <= 1.0 + GameConstants.EPSILON) {
             double interX = this.start.getX() + t * (this.end.getX() - this.start.getX());
             double interY = this.start.getY() + t * (this.end.getY() - this.start.getY());
             return new Point(interX, interY);
@@ -168,7 +182,8 @@ public class Line {
 
     /**
      * Helper that computes determinant for intersection math.
-     *
+     * if the result is in the GameConstants.EPSILON threshold the line are Parallel or colliner
+     * 
      * @param other another line segment.
      * @return determinant of the two segment direction vectors.
      */
@@ -191,6 +206,10 @@ public class Line {
         }
         double dst1 = point.distance(line.start());
         double dst2 = point.distance(line.end());
-        return Math.abs((dst1 + dst2) - line.length()) < EPSILON;
+        return Math.abs((dst1 + dst2) - line.length()) < GameConstants.EPSILON;
     }
+
+
+
+    
 }
