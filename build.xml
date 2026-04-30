@@ -29,6 +29,10 @@
         <java classname="AbstractArtDrawing" classpath="${classpath}" fork="true"/>
     </target>
 
+    <target name="BallTest1" depends="compile" >
+        <java classname="BallsTest1" classpath="${classpath}" fork="true"/>
+    </target>
+
     <!-- Run checkstyle on all our source files -->
     <target name="check">
         <java jar="checkstyle-8.44-all.jar" fork="true">
