@@ -1,7 +1,7 @@
 /**
- * save all the game constants for easier acces
+ * save all the game constants for easier acces.
  */
-public  class GameConstants {
+public final class GameConstants {
 
     /**
      * just consstant class - should not be instantiated.

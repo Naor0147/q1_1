@@ -1,5 +1,3 @@
-import java.text.Normalizer;
-
 /**
  * Represents a 2D point with x and y coordinates.
  */
@@ -63,8 +61,5 @@ public class Point {
    public double getY() {
       return this.y;
    }
-
-
-   
 
 }

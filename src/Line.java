@@ -122,7 +122,7 @@ public class Line {
             return null;
         }
 
-        //if the point are cloliner or parreal 
+        //if the point are cloliner or parreal
         double determnt = getDeterminant(other);
         if (Math.abs(determnt) < GameConstants.EPSILON) {
             if (this.start.equals(other.start)
@@ -157,7 +157,8 @@ public class Line {
         double t = tNumm / determnt;
         double u = uNumm / determnt;
 
-        if (t >= -GameConstants.EPSILON && t <= 1.0 + GameConstants.EPSILON && u >= -GameConstants.EPSILON && u <= 1.0 + GameConstants.EPSILON) {
+        if (t >= -GameConstants.EPSILON && t <= 1.0 + GameConstants.EPSILON
+                && u >= -GameConstants.EPSILON && u <= 1.0 + GameConstants.EPSILON) {
             double interX = this.start.getX() + t * (this.end.getX() - this.start.getX());
             double interY = this.start.getY() + t * (this.end.getY() - this.start.getY());
             return new Point(interX, interY);
@@ -182,8 +183,8 @@ public class Line {
 
     /**
      * Helper that computes determinant for intersection math.
-     * if the result is in the GameConstants.EPSILON threshold the line are Parallel or colliner
-     * 
+     *if the result is in the GameConstants.EPSILON threshold the line are Parallel or colliner
+     *
      * @param other another line segment.
      * @return determinant of the two segment direction vectors.
      */
@@ -209,7 +210,4 @@ public class Line {
         return Math.abs((dst1 + dst2) - line.length()) < GameConstants.EPSILON;
     }
 
-
-
-    
 }
