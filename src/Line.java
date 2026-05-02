@@ -3,8 +3,6 @@
  */
 public class Line {
 
-
-
     private final Point start;
     private final Point end;
 
@@ -122,7 +120,7 @@ public class Line {
             return null;
         }
 
-        //if the point are cloliner or parreal
+        // if the point are cloliner or parreal
         double determnt = getDeterminant(other);
         if (Math.abs(determnt) < GameConstants.EPSILON) {
             if (this.start.equals(other.start)
@@ -147,7 +145,6 @@ public class Line {
             }
             return null;
         }
-
 
         // math forumal that check if intersction lies in the fintie line
         double tNumm = (other.start().getX() - this.start.getX()) * (other.end().getY() - other.start().getY())
@@ -183,7 +180,8 @@ public class Line {
 
     /**
      * Helper that computes determinant for intersection math.
-     *if the result is in the GameConstants.EPSILON threshold the line are Parallel or colliner
+     * if the result is in the GameConstants.EPSILON threshold the line are Parallel
+     * or colliner
      *
      * @param other another line segment.
      * @return determinant of the two segment direction vectors.

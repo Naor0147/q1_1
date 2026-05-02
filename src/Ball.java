@@ -15,7 +15,7 @@ public class Ball {
     private Line[] obstacles;
 
     // const
-    private static final int MAX_RADIUS = 150;
+    private static final int MAX_RADIUS = 100;
 
     /**
      * Builds a new Ball given its center point, radius, and color.

@@ -10,7 +10,7 @@ public final class GameEngine {
     private static final int MIN_RADIUS_SIZE = 1;
     private static final int MIN_COLOR_VALUE = 40;
     private static final int MAX_COLOR_VALUE = 255;
-    private static final double SAFE_MULTIPLIER_FOR_RANDOM_POINT = 2.5;
+    private static final double SAFE_MULTIPLIER_FOR_RANDOM_POINT = 1.2;
 
     /**
      * maximum ball speed.
@@ -115,6 +115,24 @@ public final class GameEngine {
     }
 
     /**
+     * Returns a random number in range with a threshold.
+     *
+     * @param min       min value
+     * @param max       max value
+     * @param threshold threshold value
+     * @return random number within the range using the threshold
+     */
+    private static double getRandomIntWithThershold(double min, double max, double threshold) {
+        if (max < min) {
+            double temp = max;
+            max = min;
+            min = temp;
+        }
+        return getRandomInt(min + threshold, max - threshold);
+
+    }
+
+    /**
      * Returns a random point in a certain area.
      *
      * @param p1     the first corner of the bounding rectangle
@@ -153,7 +171,7 @@ public final class GameEngine {
         boolean isInObstacle = true;
         int maxAttempts = 100;
         int attempts = 0;
-
+        int safty = radius;
         while (isInObstacle && attempts < maxAttempts) {
             attempts++;
             p = getRandomCenterPointForBall(windowRectangle.getLeftTop(), windowRectangle.getRightBottom(), radius);
@@ -161,10 +179,10 @@ public final class GameEngine {
 
             for (Rectangle obstacle : obstacles) {
                 // Expand the boundaries of the obstacle by the ball's radius (threshold)
-                double expandedMinX = obstacle.getLeftTop().getX() - radius;
-                double expandedMaxX = obstacle.getRightBottom().getX() + radius;
-                double expandedMinY = obstacle.getLeftTop().getY() - radius;
-                double expandedMaxY = obstacle.getRightBottom().getY() + radius;
+                double expandedMinX = obstacle.getLeftTop().getX() - safty;
+                double expandedMaxX = obstacle.getRightBottom().getX() + safty;
+                double expandedMinY = obstacle.getLeftTop().getY() - safty;
+                double expandedMaxY = obstacle.getRightBottom().getY() + safty;
 
                 // If the ball's center is inside this expanded bounding box, part of the ball
                 // overlaps the obstacle.
@@ -175,20 +193,23 @@ public final class GameEngine {
                     break;
                 }
             }
+
         }
+
         return p;
     }
+
     /**
      * create a random point insde a rect
-     * @param rect to be insde  
-     * @param threshold to make sure the point is not to close to the edge of the rect
+     * 
+     * @param rect      to be insde
+     * @param threshold to make sure the point is not to close to the edge of the
+     *                  rect
      * @return a random point inside the rectangle
      */
-    public static Point createRandomPointInRect(Rectangle rect,int threshold) {
-        return GameEngine.getRandomCenterPointForBall(rect.getLeftTop(),rect.getRightBottom() ,threshold);
+    public static Point createRandomPointInRect(Rectangle rect, int threshold) {
+        return GameEngine.getRandomCenterPointForBall(rect.getLeftTop(), rect.getRightBottom(), threshold);
     }
-
-
 
     /**
      * Returns the number of valid balls.
@@ -244,21 +265,4 @@ public final class GameEngine {
         return validBallsRadiusArr;
     }
 
-    /**
-     * Returns a random number in range with a threshold.
-     *
-     * @param min       min value
-     * @param max       max value
-     * @param threshold threshold value
-     * @return random number within the range using the threshold
-     */
-    private static double getRandomIntWithThershold(double min, double max, double threshold) {
-        if (max < min) {
-            double temp = max;
-            max = min;
-            min = temp;
-        }
-        return getRandomInt(min + threshold, max - threshold);
-
-    }
 }
