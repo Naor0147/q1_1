@@ -10,7 +10,7 @@ public final class GameEngine {
     private static final int MIN_RADIUS_SIZE = 1;
     private static final int MIN_COLOR_VALUE = 40;
     private static final int MAX_COLOR_VALUE = 255;
-    private static final double SAFE_MULTIPLIER_FOR_RANDOM_POINT = 1.5;
+    private static final double SAFE_MULTIPLIER_FOR_RANDOM_POINT = 2.5;
 
     /**
      * maximum ball speed.
@@ -93,6 +93,28 @@ public final class GameEngine {
     }
 
     /**
+     * Parses args into non-negative integers.
+     *
+     * @param args command-line arguments
+     * @return parsed int array, or null when invalid input is detected
+     */
+    public static int[] parseArgsForPositiveIntegers(String[] args) {
+        if (args == null) {
+            System.out.println("you need to write integers");
+            return null;
+        }
+        int[] intArray = new int[args.length];
+        for (int i = 0; i < args.length; i++) {
+            intArray[i] = (int) Double.parseDouble(args[i]);
+            if (intArray[i] < 0) {
+                System.out.println("all integers must be bigger or eqaul to 0");
+                return null;
+            }
+        }
+        return intArray;
+    }
+
+    /**
      * Returns a random point in a certain area.
      *
      * @param p1     the first corner of the bounding rectangle
@@ -100,7 +122,7 @@ public final class GameEngine {
      * @param radius the radius of the ball
      * @return a random Point within the valid area
      */
-    private static Point getRandomCenterPointForBall(Point p1, Point p2, int radius) {
+    public static Point getRandomCenterPointForBall(Point p1, Point p2, int radius) {
 
         // increase the radius to make sure the ball is fully visible within the bounds
         radius = (int) (radius * SAFE_MULTIPLIER_FOR_RANDOM_POINT);
@@ -115,6 +137,58 @@ public final class GameEngine {
 
         return new Point(x, y);
     }
+
+    /**
+     * Returns a random point in a certain area and outside of obstacles.
+     *
+     * @param p1        the first corner of the bounding rectangle
+     * @param p2        the second corner of the bounding rectangle
+     * @param radius    the radius of the ball
+     * @param obstacles array of obstacles to avoid
+     * @return a random Point within the valid area and outside obstacles
+     */
+    public static Point createRandomPointInRectAndOutSideObstacls(Rectangle windowRectangle, Rectangle[] obstacles,
+            int radius) {
+        Point p = new Point(0, 0);
+        boolean isInObstacle = true;
+        int maxAttempts = 100;
+        int attempts = 0;
+
+        while (isInObstacle && attempts < maxAttempts) {
+            attempts++;
+            p = getRandomCenterPointForBall(windowRectangle.getLeftTop(), windowRectangle.getRightBottom(), radius);
+            isInObstacle = false;
+
+            for (Rectangle obstacle : obstacles) {
+                // Expand the boundaries of the obstacle by the ball's radius (threshold)
+                double expandedMinX = obstacle.getLeftTop().getX() - radius;
+                double expandedMaxX = obstacle.getRightBottom().getX() + radius;
+                double expandedMinY = obstacle.getLeftTop().getY() - radius;
+                double expandedMaxY = obstacle.getRightBottom().getY() + radius;
+
+                // If the ball's center is inside this expanded bounding box, part of the ball
+                // overlaps the obstacle.
+                if (p.getX() > expandedMinX && p.getX() < expandedMaxX
+                        && p.getY() > expandedMinY && p.getY() < expandedMaxY) {
+
+                    isInObstacle = true;
+                    break;
+                }
+            }
+        }
+        return p;
+    }
+    /**
+     * create a random point insde a rect
+     * @param rect to be insde  
+     * @param threshold to make sure the point is not to close to the edge of the rect
+     * @return a random point inside the rectangle
+     */
+    public static Point createRandomPointInRect(Rectangle rect,int threshold) {
+        return GameEngine.getRandomCenterPointForBall(rect.getLeftTop(),rect.getRightBottom() ,threshold);
+    }
+
+
 
     /**
      * Returns the number of valid balls.

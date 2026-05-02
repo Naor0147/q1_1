@@ -39,4 +39,8 @@ public final class GameConstants {
      */
     public static final int DEFAULT_BALL_RADIUS = 10;
 
-}
+    /**
+     * safety margin multiplier.
+     */
+    public static final double SAFETY_MARGIN_MULTIPLIER = 1.5;
+}   

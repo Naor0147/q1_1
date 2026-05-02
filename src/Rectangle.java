@@ -89,7 +89,20 @@ public class Rectangle {
     }
 
 
-
+    /**
+     * Gets the left top corner of the rectangle.
+     * @return
+     */
+    public Point getLeftTop() {
+        return this.pointLeftTop;
+    }
+    /**
+     * Gets the right bottom corner of the rectangle.
+     * @return
+     */
+    public Point getRightBottom() {
+        return this.pointRightBottom;
+    }
     /**
      * Gets the rectangle lines as line array.
      *
@@ -127,5 +140,24 @@ public class Rectangle {
         int width = (int) (pointRightBottom.getX() - pointLeftTop.getX());
         int height = (int) (pointRightBottom.getY() - pointLeftTop.getY());
         surface.fillRectangle((int) pointLeftTop.getX(), (int) pointLeftTop.getY(), width, height);
+    }
+
+
+
+    /**
+     * Check if point is inside the rectangle.
+     *
+     * @param point the point to check
+     * @return true if the point is inside the rectangle, false otherwise
+     */
+    public boolean isPointInside(Point point) {
+        if (point == null) {
+            return false;
+        }
+        double x = point.getX();
+        double y = point.getY();
+        boolean insideX = (x >= pointLeftTop.getX()) && (x <= pointRightBottom.getX());
+        boolean insideY = (y >= pointLeftTop.getY()) && (y <= pointRightBottom.getY());
+        return insideX && insideY;
     }
 }

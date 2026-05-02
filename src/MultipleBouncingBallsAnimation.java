@@ -12,18 +12,9 @@ public class MultipleBouncingBallsAnimation {
      * @param args command-line arguments.
      */
     public static void main(String[] args) {
-        if (args == null) {
-            System.out.println("you need to write integers");
+        int[] intArray = GameEngine.parseArgsForPositiveIntegers(args);
+        if (intArray == null) {
             return;
-        }
-        int[] intArray = new int[args.length];
-        for (int i = 0; i < args.length; i++) {
-            intArray[i] = (int) Double.parseDouble(args[i]);
-            if (intArray[i] < 0) {
-                System.out.println("all integers must be bigger or eqaul to 0");
-                intArray[i] = 0;
-                return;
-            }
         }
         drawbals(intArray);
     }
@@ -37,11 +28,6 @@ public class MultipleBouncingBallsAnimation {
         GUI gui = new GUI("Bouncing Ball", GameConstants.WINDOW_WIDTH, GameConstants.WINDOW_HEIGHT);
         Sleeper sleeper = new Sleeper();
         DrawSurface surface = gui.getDrawSurface();
-
-        // Ball ball = new Ball(start, GameConstants.DEFAULT_BALL_RADIUS,
-        // java.awt.Color.BLACK);
-        // ball.setVelocity(dx, dy);
-        // my obstacles
         Rectangle bounds = new Rectangle(0, 0, GameConstants.WINDOW_WIDTH, GameConstants.WINDOW_HEIGHT);
         Ball[] balls = GameEngine.createValidBallsArr(intArray);
         for (Ball ball : balls) {
