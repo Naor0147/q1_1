@@ -9,6 +9,10 @@ public class CollisionEngine {
     // consider fractions between 0 and 1
     private static final double MIN_TIME_REMAINING_THRESHOLD = 0.001; // to prevent infinite loops
 
+
+    /** 
+     * Helper class to store collison results.
+     */
     private static final class CollisionResult {
         private double fraction;
         private Line wallHit;
@@ -32,7 +36,7 @@ public class CollisionEngine {
     /**
      * Resolves the collision between a ball and line segments.
      *
-     * @param ball the ball involved in the collision
+     * @param ball      the ball involved in the collision
      * @param wallArray the walls involved in the collision
      */
     public static void resolveBallLineCollision(Ball ball, Line[] wallArray) {
@@ -52,7 +56,11 @@ public class CollisionEngine {
             // end position of the ball if no collisions occur in this step
             double ballIntendedEndX = ballStartPosX + ballVx;
             double ballIntendedEndY = ballStartPosY + ballVy;
-
+            // variables for the closest wall to the ball.
+            // i set fractionOfFrameToClosestCollision
+            // to IMPOSSIBLE_COLLISION_FRACTION_TEMP
+            // because it is impossible to have a collision after the end of the frame (1.0)
+            // nd this way we can easily check if we found a collision or not.
             CollisionResult collision = findClosestCollision(wallArray, ballStartPosX, ballStartPosY, ballVx, ballVy,
                     ballIntendedEndX, ballIntendedEndY, ballRadius);
 
@@ -152,7 +160,7 @@ public class CollisionEngine {
                 result.updateIfCloser(hitFractionAlongBallPath, wall, wallNormalX, wallNormalY);
             }
 
-            Point[] corners = new Point[] {wall.start(), wall.end()};
+            Point[] corners = new Point[] { wall.start(), wall.end() };
 
             for (Point corner : corners) {
                 double cornerX = corner.getX();
