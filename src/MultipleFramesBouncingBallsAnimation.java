@@ -26,9 +26,6 @@ public class MultipleFramesBouncingBallsAnimation {
      * @param intArray array of ball radii
      */
     private static void drawbals(int[] intArray) {
-        GUI gui = new GUI("Bouncing Ball", GameConstants.WINDOW_WIDTH, GameConstants.WINDOW_HEIGHT);
-        Sleeper sleeper = new Sleeper();
-        DrawSurface surface = gui.getDrawSurface();
 
         Rectangle windowBounds = new Rectangle(0, 0, GameConstants.WINDOW_WIDTH, GameConstants.WINDOW_HEIGHT);
         Rectangle greyRect = new Rectangle(50, 50, 500, 500);
@@ -55,11 +52,14 @@ public class MultipleFramesBouncingBallsAnimation {
             n++;
         }
 
+        GUI gui = new GUI("Bouncing Ball", GameConstants.WINDOW_WIDTH, GameConstants.WINDOW_HEIGHT);
+        Sleeper sleeper = new Sleeper();
+
         while (true) {
             for (Ball ball : balls) {
                 ball.moveOneStep();
             }
-            surface = gui.getDrawSurface();
+            DrawSurface surface = gui.getDrawSurface();
             greyRect.drawOn(surface);
 
             for (Ball ball : balls) {
