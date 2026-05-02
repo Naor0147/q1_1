@@ -9,8 +9,7 @@ public class CollisionEngine {
     // consider fractions between 0 and 1
     private static final double MIN_TIME_REMAINING_THRESHOLD = 0.001; // to prevent infinite loops
 
-
-    /** 
+    /**
      * Helper class to store collison results.
      */
     private static final class CollisionResult {
@@ -20,6 +19,9 @@ public class CollisionEngine {
         private double normalY;
 
         private CollisionResult() {
+            // i set fractionOfFrameToClosestCollision
+            // to IMPOSSIBLE_COLLISION_FRACTION_TEMP
+            // because it is impossible to have a collision after the end of the frame (1.0)
             this.fraction = IMPOSSIBLE_COLLISION_FRACTION_TEMP;
         }
 
@@ -35,6 +37,7 @@ public class CollisionEngine {
 
     /**
      * Resolves the collision between a ball and line segments.
+     * and update ball Velocity and position accordingly.
      *
      * @param ball      the ball involved in the collision
      * @param wallArray the walls involved in the collision
@@ -57,12 +60,10 @@ public class CollisionEngine {
             double ballIntendedEndX = ballStartPosX + ballVx;
             double ballIntendedEndY = ballStartPosY + ballVy;
             // variables for the closest wall to the ball.
-            // i set fractionOfFrameToClosestCollision
-            // to IMPOSSIBLE_COLLISION_FRACTION_TEMP
-            // because it is impossible to have a collision after the end of the frame (1.0)
             // nd this way we can easily check if we found a collision or not.
-            CollisionResult collision = findClosestCollision(wallArray, ballStartPosX, ballStartPosY, ballVx, ballVy,
-                    ballIntendedEndX, ballIntendedEndY, ballRadius);
+            Point ballIntendedEnd = new Point(ballIntendedEndX, ballIntendedEndY);
+            CollisionResult collision = findClosestCollision(wallArray, ball.getPoint(), ballVx, ballVy,
+                    ballIntendedEnd, ballRadius);
 
             if (collision.wallHit == null) {
                 ball.setCenter(ballIntendedEndX, ballIntendedEndY);
@@ -74,10 +75,8 @@ public class CollisionEngine {
             double impactPositionX = ballStartPosX + (ballVx * collision.fraction);
             double impactPositionY = ballStartPosY + (ballVy * collision.fraction);
 
-            // Add a tiny push (Epsilon) along the normal to prevent the ball from getting
-            // stuck
-            // inside the wall segment on the next iteration due to floating-point
-            // inaccuracies.
+            // I added ANTI_STICK_PUSH_DISTANCE so the.
+            // ball dont get stuck inside the wall
             double finalPosX = impactPositionX + (collision.normalX * ANTI_STICK_PUSH_DISTANCE);
             double finalPosY = impactPositionY + (collision.normalY * ANTI_STICK_PUSH_DISTANCE);
             ball.setCenter(finalPosX, finalPosY);
@@ -100,10 +99,14 @@ public class CollisionEngine {
 
     }
 
-    private static CollisionResult findClosestCollision(Line[] wallArray, double ballStartPosX, double ballStartPosY,
-            double ballVx, double ballVy, double ballIntendedEndX, double ballIntendedEndY, double ballRadius) {
+    private static CollisionResult findClosestCollision(Line[] wallArray, Point ballStart,
+            double ballVx, double ballVy, Point ballIntendedEnd, double ballRadius) {
 
         CollisionResult result = new CollisionResult();
+        double ballStartPosX = ballStart.getX();
+        double ballStartPosY = ballStart.getY();
+        double ballIntendedEndX = ballIntendedEnd.getX();
+        double ballIntendedEndY = ballIntendedEnd.getY();
 
         for (Line wall : wallArray) {
             double wallStartX = wall.start().getX();
@@ -160,7 +163,7 @@ public class CollisionEngine {
                 result.updateIfCloser(hitFractionAlongBallPath, wall, wallNormalX, wallNormalY);
             }
 
-            Point[] corners = new Point[] { wall.start(), wall.end() };
+            Point[] corners = new Point[] {wall.start(), wall.end()};
 
             for (Point corner : corners) {
                 double cornerX = corner.getX();
