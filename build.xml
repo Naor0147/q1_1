@@ -8,7 +8,8 @@
 
     <!-- Define a property, which is like a variable for the build file, -->
     <!--  with the classpath for all compilation & execution targets. -->
-    <property name="classpath" value="bin:biuoop-1.4.jar" />
+    <property name="classpath" value="bin;biuoop-1.4.jar" />
+    <property name="args" value="" />
 
     <!-- Compile all java files under `src`, and export .class files into `bin` -->
     <target name="compile">
@@ -20,13 +21,32 @@
         <delete dir="bin"/>
     </target>
 
+    <!-- test-->
+    <target name="BallTest2" depends="compile" >
+        <java classname="BallTest2" classpath="${classpath}" fork="true"/>
+    </target>
+
     <!--    This target is for your convenience; we will not grade it. -->
     <target name="run-gui-example" depends="compile" >
         <java classname="SimpleGuiExample" classpath="${classpath}" fork="true"/>
     </target>
 
     <target name="run2" depends="compile" >
-        <java classname="AbstractArtDrawing" classpath="${classpath}" fork="true"/>
+        <java classname="BouncingBallAnimation" classpath="${classpath}" fork="true">
+            <arg line="${args}"/>
+        </java>
+    </target>
+
+    <target name="run3" depends="compile" >
+        <java classname="MultipleBouncingBallsAnimation" classpath="${classpath}" fork="true">
+            <arg line="${args}"/>
+        </java>
+    </target>
+
+    <target name="run4" depends="compile" >
+        <java classname="MultipleFramesBouncingBallsAnimation" classpath="${classpath}" fork="true">
+            <arg line="${args}"/>
+        </java>
     </target>
 
     <target name="BallTest1" depends="compile" >

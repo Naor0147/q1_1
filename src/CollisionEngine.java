@@ -1,42 +1,47 @@
-import java.util.List;
-
 /**
- * Handles the collsion aspect of the game.
+ * Handles the collision aspect of the game.
  */
 public class CollisionEngine {
 
     private static final int MAX_BOUNCES_PER_FRAME = 3;
     private static final double ANTI_STICK_PUSH_DISTANCE = 0.001;
     private static final double IMPOSSIBLE_COLLISION_FRACTION_TEMP = 2.0; // any value > 1.0 works, since we only
-                                                                          // consider fractions between 0 and 1
+    // consider fractions between 0 and 1
     private static final double MIN_TIME_REMAINING_THRESHOLD = 0.001; // to prevent infinite loops
 
+    private static final class CollisionResult {
+        private double fraction;
+        private Line wallHit;
+        private double normalX;
+        private double normalY;
+
+        private CollisionResult() {
+            this.fraction = IMPOSSIBLE_COLLISION_FRACTION_TEMP;
+        }
+
+        private void updateIfCloser(double hitFraction, Line wall, double hitNormalX, double hitNormalY) {
+            if (hitFraction < this.fraction) {
+                this.fraction = hitFraction;
+                this.wallHit = wall;
+                this.normalX = hitNormalX;
+                this.normalY = hitNormalY;
+            }
+        }
+    }
+
     /**
-     * Resolves the collision between a ball and a lines .
-     * 
-     * 
-     * @param ball the ball
-     * @param wall the wall
+     * Resolves the collision between a ball and line segments.
+     *
+     * @param ball the ball involved in the collision
+     * @param wallArray the walls involved in the collision
      */
-
     public static void resolveBallLineCollision(Ball ball, Line[] wallArray) {
-
         double frameTimeRemaining = 1.0;
         int bounceCountThisFrame = 0;
         double ballRadius = ball.getSize();
 
-        while (frameTimeRemaining > MIN_TIME_REMAINING_THRESHOLD && bounceCountThisFrame < MAX_BOUNCES_PER_FRAME) {
-
-            // variables for the closest wall to the ball.
-            // i set fractionOfFrameToClosestCollision
-            // to IMPOSSIBLE_COLLISION_FRACTION_TEMP
-            // because it is impossible to have a collision after the end of the frame (1.0)
-            // nd this way we can easily check if we found a collision or not.
-            double fractionOfFrameToClosestCollision = IMPOSSIBLE_COLLISION_FRACTION_TEMP;
-            Line closestWallHit = null;
-            double closestWallNormalX = 0;
-            double closestWallNormalY = 0;
-
+        while (frameTimeRemaining > MIN_TIME_REMAINING_THRESHOLD
+                && bounceCountThisFrame < MAX_BOUNCES_PER_FRAME) {
             double ballStartPosX = ball.getPoint().getX();
             double ballStartPosY = ball.getPoint().getY();
 
@@ -48,110 +53,158 @@ public class CollisionEngine {
             double ballIntendedEndX = ballStartPosX + ballVx;
             double ballIntendedEndY = ballStartPosY + ballVy;
 
-            for (Line wall : wallArray) {
-                // wall pos
-                double wallStartX = wall.start().getX();
-                double wallStartY = wall.start().getY();
-                double wallEndX = wall.end().getX();
-                double wallEndY = wall.end().getY();
+            CollisionResult collision = findClosestCollision(wallArray, ballStartPosX, ballStartPosY, ballVx, ballVy,
+                    ballIntendedEndX, ballIntendedEndY, ballRadius);
 
-                // wall directoin
-                double wallDirectionX = wallEndX - wallStartX;
-                double wallDirectionY = wallEndY - wallStartY;
-
-                double wallLength = Math.sqrt(wallDirectionX * wallDirectionX + wallDirectionY * wallDirectionY);
-
-                if (wallLength < GameConstants.EPSILON) {
-                    continue; // skip zero-length walls
-                }
-
-                // get wall normal
-                double wallNormalX = -wallDirectionY / wallLength;
-                double wallNormalY = wallDirectionX / wallLength;
-
-                // makes sure the normal is facing towards the ball and not thwe wrong direction
-                double vectorFromWallToBallX = ballStartPosX - wallStartX;
-                double vectorFromWallToBallY = ballStartPosY - wallStartY;
-                if ((wallNormalX * vectorFromWallToBallX + wallNormalY * vectorFromWallToBallY) < 0) {
-                    wallNormalX = -wallNormalX;
-                    wallNormalY = -wallNormalY;
-                }
-
-                // create an ofest wall for easier calc
-                double offsetWallStartX = wallStartX + (wallNormalX * ballRadius);
-                double offsetWallStartY = wallStartY + (wallNormalY * ballRadius);
-                double offsetWallEndX = wallEndX + (wallNormalX * ballRadius);
-                double offsetWallEndY = wallEndY + (wallNormalY * ballRadius);
-
-                // the calc for line segment intersection of
-                // Ball Path with Offset Wall
-                // calc denominator
-                double intersectionDenominator = (ballStartPosX - ballIntendedEndX)
-                        * (offsetWallStartY - offsetWallEndY) -
-                        (ballStartPosY - ballIntendedEndY) * (offsetWallStartX - offsetWallEndX);
-
-                // If denominator is in the Epslion range the lines are parallel and will not
-                // meet
-                if (Math.abs(intersectionDenominator) < GameConstants.EPSILON) {
-                    continue;
-                }
-
-                // 't' (hitFractionAlongBallPath) represents the percentage of the movement path
-                // completed at impact
-                double hitFractionAlongBallPath = ((ballStartPosX - offsetWallStartX)
-                        * (offsetWallStartY - offsetWallEndY) -
-                        (ballStartPosY - offsetWallStartY) * (offsetWallStartX - offsetWallEndX))
-                        / intersectionDenominator;
-
-                // 'u' (hitFractionAlongWall) represents where the hit occurred on the wall
-                // segment itself
-                double hitFractionAlongWall = ((ballStartPosX - ballIntendedEndX) * (ballStartPosY - offsetWallStartY) -
-                        (ballStartPosY - ballIntendedEndY) * (ballStartPosX - offsetWallStartX))
-                        / intersectionDenominator;
-
-                // now we check if is valid colllsion
-                // hitFractionAlongBallPath and hitFractionAlongWall
-                // must be between 0 and 1 so it happen in this frame
-                // and the collison happens on the finite line
-                if (hitFractionAlongBallPath >= 0 && hitFractionAlongBallPath <= 1 &&
-                        hitFractionAlongWall >= 0 && hitFractionAlongWall <= 1) {
-
-                    // If valid, check if this is the EARLIEST collision in this frame (the minimum
-                    // 't')
-                    if (hitFractionAlongBallPath < fractionOfFrameToClosestCollision) {
-                        fractionOfFrameToClosestCollision = hitFractionAlongBallPath;
-                        closestWallHit = wall;
-                        closestWallNormalX = wallNormalX;
-                        closestWallNormalY = wallNormalY;
-                    }
-                }
-
-            }
-            // no collsion
-            if (closestWallHit == null) {
+            if (collision.wallHit == null) {
                 ball.setCenter(ballIntendedEndX, ballIntendedEndY);
                 break;
             }
 
             // if collsion happend
             // we calculate impact point
-            double impactPositionX = ballStartPosX + (ballVx * fractionOfFrameToClosestCollision);
-            double impactPositionY = ballStartPosY + (ballVy * fractionOfFrameToClosestCollision);
+            double impactPositionX = ballStartPosX + (ballVx * collision.fraction);
+            double impactPositionY = ballStartPosY + (ballVy * collision.fraction);
 
             // Add a tiny push (Epsilon) along the normal to prevent the ball from getting
             // stuck
             // inside the wall segment on the next iteration due to floating-point
             // inaccuracies.
-            double finalPosX = impactPositionX + (closestWallNormalX * ANTI_STICK_PUSH_DISTANCE);
-            double finalPosY = impactPositionY + (closestWallNormalY * ANTI_STICK_PUSH_DISTANCE);
+            double finalPosX = impactPositionX + (collision.normalX * ANTI_STICK_PUSH_DISTANCE);
+            double finalPosY = impactPositionY + (collision.normalY * ANTI_STICK_PUSH_DISTANCE);
             ball.setCenter(finalPosX, finalPosY);
 
-            // in the feture could implemnt smarter speed
-            ball.setVelocity(0 - ball.getVelocity().getDx(), 0 - ball.getVelocity().getDy());
+            // implemnt a better verion than reqiurd for better accrecy
+            // foor futre profing if line at anglend
+            double currentDx = ball.getVelocity().getDx();
+            double currentDy = ball.getVelocity().getDy();
+            double dotProduct = (currentDx * collision.normalX) + (currentDy * collision.normalY);
+
+            // Calculate the new reflected velocity: V_new = V - 2 * (V . N) * N
+            double newDx = currentDx - 2 * dotProduct * collision.normalX;
+            double newDy = currentDy - 2 * dotProduct * collision.normalY;
+
+            ball.setVelocity(newDx, newDy);
             // calac the time spent reaching this wall and do decut from 1;
-            frameTimeRemaining = frameTimeRemaining * (1.0 - fractionOfFrameToClosestCollision);
+            frameTimeRemaining = frameTimeRemaining * (1.0 - collision.fraction);
             bounceCountThisFrame++;
         }
 
     }
+
+    private static CollisionResult findClosestCollision(Line[] wallArray, double ballStartPosX, double ballStartPosY,
+            double ballVx, double ballVy, double ballIntendedEndX, double ballIntendedEndY, double ballRadius) {
+
+        CollisionResult result = new CollisionResult();
+
+        for (Line wall : wallArray) {
+            double wallStartX = wall.start().getX();
+            double wallStartY = wall.start().getY();
+            double wallEndX = wall.end().getX();
+            double wallEndY = wall.end().getY();
+
+            double wallDirectionX = wallEndX - wallStartX;
+            double wallDirectionY = wallEndY - wallStartY;
+
+            double wallLength = Math.sqrt(wallDirectionX * wallDirectionX + wallDirectionY * wallDirectionY);
+
+            if (wallLength < GameConstants.EPSILON) {
+                continue; // skip zero-length walls
+            }
+
+            double wallNormalX = -wallDirectionY / wallLength;
+            double wallNormalY = wallDirectionX / wallLength;
+
+            double vectorFromWallToBallX = ballStartPosX - wallStartX;
+            double vectorFromWallToBallY = ballStartPosY - wallStartY;
+            if ((wallNormalX * vectorFromWallToBallX + wallNormalY * vectorFromWallToBallY) < 0) {
+                wallNormalX = -wallNormalX;
+                wallNormalY = -wallNormalY;
+            }
+
+            double offsetWallStartX = wallStartX + (wallNormalX * ballRadius);
+            double offsetWallStartY = wallStartY + (wallNormalY * ballRadius);
+            double offsetWallEndX = wallEndX + (wallNormalX * ballRadius);
+            double offsetWallEndY = wallEndY + (wallNormalY * ballRadius);
+
+            double intersectionDenominator = (ballStartPosX - ballIntendedEndX)
+                    * (offsetWallStartY - offsetWallEndY)
+                    - (ballStartPosY - ballIntendedEndY) * (offsetWallStartX - offsetWallEndX);
+
+            if (Math.abs(intersectionDenominator) < GameConstants.EPSILON) {
+                continue;
+            }
+
+            double hitFractionAlongBallPath = ((ballStartPosX - offsetWallStartX)
+                    * (offsetWallStartY - offsetWallEndY)
+                    - (ballStartPosY - offsetWallStartY) * (offsetWallStartX - offsetWallEndX))
+                    / intersectionDenominator;
+
+            double hitFractionAlongWall = ((ballStartPosX - offsetWallStartX)
+                    * (ballStartPosY - ballIntendedEndY)
+                    - (ballStartPosY - offsetWallStartY) * (ballStartPosX - ballIntendedEndX))
+                    / intersectionDenominator;
+
+            if (hitFractionAlongBallPath >= 0
+                    && hitFractionAlongBallPath <= 1
+                    && hitFractionAlongWall >= 0
+                    && hitFractionAlongWall <= 1) {
+                result.updateIfCloser(hitFractionAlongBallPath, wall, wallNormalX, wallNormalY);
+            }
+
+            Point[] corners = new Point[] {wall.start(), wall.end()};
+
+            for (Point corner : corners) {
+                double cornerX = corner.getX();
+                double cornerY = corner.getY();
+
+                double theAPart = (ballVx * ballVx) + (ballVy * ballVy);
+                double theBPart = 2
+                        * ((ballVx * (ballStartPosX - cornerX)) + (ballVy * (ballStartPosY - cornerY)));
+                double theCPart = ((ballStartPosX - cornerX) * (ballStartPosX - cornerX))
+                        + ((ballStartPosY - cornerY) * (ballStartPosY - cornerY))
+                        - (ballRadius * ballRadius);
+
+                if (theAPart < GameConstants.EPSILON) {
+                    continue;
+                }
+
+                double discriminant = (theBPart * theBPart) - (4 * theAPart * theCPart);
+
+                if (discriminant >= 0) {
+                    double hitFractionTime1 = (-theBPart - Math.sqrt(discriminant)) / (2 * theAPart);
+                    double hitFractionTime2 = (-theBPart + Math.sqrt(discriminant)) / (2 * theAPart);
+
+                    double closestCornerHitFraction = -1;
+                    if (hitFractionTime1 >= 0 && hitFractionTime1 <= 1) {
+                        closestCornerHitFraction = hitFractionTime1;
+                    }
+                    if (hitFractionTime2 >= 0
+                            && hitFractionTime2 <= 1
+                            && (hitFractionTime2 < closestCornerHitFraction || closestCornerHitFraction < 0)) {
+                        closestCornerHitFraction = hitFractionTime2;
+                    }
+
+                    if (closestCornerHitFraction >= 0) {
+                        double impactPositionX = ballStartPosX + (ballVx * closestCornerHitFraction);
+                        double impactPositionY = ballStartPosY + (ballVy * closestCornerHitFraction);
+                        double cornerNormalDirX = impactPositionX - cornerX;
+                        double cornerNormalDirY = impactPositionY - cornerY;
+
+                        double cornerNormalLen = Math.sqrt((cornerNormalDirX * cornerNormalDirX)
+                                + (cornerNormalDirY * cornerNormalDirY));
+
+                        double cornerNormalX = cornerNormalDirX / cornerNormalLen;
+                        double cornerNormalY = cornerNormalDirY / cornerNormalLen;
+
+                        result.updateIfCloser(closestCornerHitFraction, wall, cornerNormalX, cornerNormalY);
+                    }
+                }
+            }
+
+        }
+
+        return result;
+    }
+
 }

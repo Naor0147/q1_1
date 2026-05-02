@@ -1,5 +1,5 @@
-/*
-class that respresnt the speed of an object
+/**
+ * Represents the velocity of an object.
  */
 public class Velocity {
 
@@ -15,7 +15,7 @@ public class Velocity {
     public Velocity(double dx, double dy) {
 
         this.dx = dx;
-        this.dx = dy;
+        this.dy = dy;
 
     }
 
@@ -34,28 +34,28 @@ public class Velocity {
     }
 
     /**
-     * change value on x -axis speed.
-     * 
-     * @param dx
+     * Changes the speed value on the x-axis.
+     *
+    * @param dx the new x-axis speed value
      */
     public void setDx(double dx) {
         this.dx = dx;
     }
 
     /**
-     * change value on y -axis speed.
-     * 
-     * @param dy
+     * Changes the speed value on the y-axis.
+     *
+     * @param dy new y-axis speed value
      */
     public void setDy(double dy) {
         this.dy = dy;
     }
 
     /**
-     * change value on x/y -axis speed.
-     * 
-     * @param dx
-     * @param dy
+     * Changes the speed value on both axes.
+     *
+     * @param dx new x-axis speed value
+     * @param dy new y-axis speed value
      */
     public void setVelocity(double dx, double dy) {
         this.dx = dx;
@@ -76,6 +76,20 @@ public class Velocity {
         double dx = speed * Math.sin(rad);
         double dy = -speed * Math.cos(rad);
         return new Velocity(dx, dy);
+    }
+
+
+    /**
+     * Gets a point with position (x,y) and returns a new point
+     * with position (x+dx, y+dy).
+     *
+     * @param p the point to apply the velocity to.
+     * @return a new point after applying the velocity.
+     */
+    public Point applyToPoint(Point p) {
+        double newX = p.getX() + this.dx;
+        double newY = p.getY() + this.dy;
+        return new Point(newX, newY);
     }
 
 }
