@@ -34,15 +34,17 @@ public class MultipleFramesBouncingBallsAnimation {
         yellowRect.setColor(java.awt.Color.YELLOW);
         Ball[] balls = GameEngine.createValidBallsArr(intArray);
 
-        Rectangle[] arrayObs = {greyRect, yellowRect};
+        Rectangle[] arrayObs = {greyRect, yellowRect };
 
         int ballsLength = balls.length;
         int n = 0;
         for (Ball ball : balls) {
             if (n < ballsLength / 2) {
-                ball.setPoint(GameEngine.createRandomPointInRect(greyRect, ball.getSize()));
+                Point p = GameEngine.randomPointInRecWithObstacls(greyRect, new Rectangle[] {yellowRect },
+                        ball.getSize());
+                ball.setPoint(p);
             } else {
-                Point p = GameEngine.createRandomPointInRectAndOutSideObstacls(windowBounds, arrayObs, ball.getSize());
+                Point p = GameEngine.randomPointInRecWithObstacls(windowBounds, arrayObs, ball.getSize());
                 ball.setPoint(p);
             }
             ball.addObstacles(windowBounds.getLines());
