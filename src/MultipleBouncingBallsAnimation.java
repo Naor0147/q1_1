@@ -27,7 +27,6 @@ public class MultipleBouncingBallsAnimation {
     private static void drawbals(int[] intArray) {
         GUI gui = new GUI("Bouncing Ball", GameConstants.WINDOW_WIDTH, GameConstants.WINDOW_HEIGHT);
         Sleeper sleeper = new Sleeper();
-        DrawSurface surface = gui.getDrawSurface();
         Rectangle bounds = new Rectangle(0, 0, GameConstants.WINDOW_WIDTH, GameConstants.WINDOW_HEIGHT);
         Ball[] balls = GameEngine.createValidBallsArr(intArray);
         for (Ball ball : balls) {
@@ -40,7 +39,7 @@ public class MultipleBouncingBallsAnimation {
             for (Ball ball : balls) {
                 ball.moveOneStep();
             }
-            surface = gui.getDrawSurface();
+            DrawSurface surface = gui.getDrawSurface();
             for (Ball ball : balls) {
                 ball.drawOn(surface);
             }

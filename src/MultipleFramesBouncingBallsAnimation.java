@@ -7,7 +7,6 @@ import biuoop.Sleeper;
  */
 public class MultipleFramesBouncingBallsAnimation {
 
-
     /**
      * Parses command-line arguments and starts the animation.
      *
@@ -20,6 +19,7 @@ public class MultipleFramesBouncingBallsAnimation {
         }
         drawbals(intArray);
     }
+
     /**
      * Draws the animation for a list of ball radii.
      *
@@ -30,7 +30,6 @@ public class MultipleFramesBouncingBallsAnimation {
         Sleeper sleeper = new Sleeper();
         DrawSurface surface = gui.getDrawSurface();
 
-
         Rectangle windowBounds = new Rectangle(0, 0, GameConstants.WINDOW_WIDTH, GameConstants.WINDOW_HEIGHT);
         Rectangle greyRect = new Rectangle(50, 50, 500, 500);
         greyRect.setColor(java.awt.Color.GRAY);
@@ -38,7 +37,7 @@ public class MultipleFramesBouncingBallsAnimation {
         yellowRect.setColor(java.awt.Color.YELLOW);
         Ball[] balls = GameEngine.createValidBallsArr(intArray);
 
-        Rectangle[] arrayObs = {greyRect, yellowRect};
+        Rectangle[] arrayObs = { greyRect, yellowRect };
 
         int ballsLength = balls.length;
         int n = 0;
@@ -49,9 +48,9 @@ public class MultipleFramesBouncingBallsAnimation {
                 Point p = GameEngine.createRandomPointInRectAndOutSideObstacls(windowBounds, arrayObs, ball.getSize());
                 ball.setPoint(p);
             }
-                ball.addObstacles(windowBounds.getLines());
-                ball.addObstacles(greyRect.getLines());
-                ball.addObstacles(yellowRect.getLines());
+            ball.addObstacles(windowBounds.getLines());
+            ball.addObstacles(greyRect.getLines());
+            ball.addObstacles(yellowRect.getLines());
             ball.setVelocity(GameEngine.getVelocityFromRadius(ball.getSize()));
             n++;
         }
