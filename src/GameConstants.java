@@ -43,4 +43,4 @@ public final class GameConstants {
      * safety margin multiplier.
      */
     public static final double SAFETY_MARGIN_MULTIPLIER = 1.5;
-}   
+}

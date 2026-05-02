@@ -87,6 +87,9 @@ public class Velocity {
      * @return a new point after applying the velocity.
      */
     public Point applyToPoint(Point p) {
+        if (p == null) {
+            return new Point(this.dx, this.dy);
+        }
         double newX = p.getX() + this.dx;
         double newY = p.getY() + this.dy;
         return new Point(newX, newY);

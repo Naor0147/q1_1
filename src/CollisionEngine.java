@@ -205,6 +205,9 @@ public class CollisionEngine {
                         double cornerNormalLen = Math.sqrt((cornerNormalDirX * cornerNormalDirX)
                                 + (cornerNormalDirY * cornerNormalDirY));
 
+                        if (cornerNormalLen < GameConstants.EPSILON) {
+                            continue;
+                        }
                         double cornerNormalX = cornerNormalDirX / cornerNormalLen;
                         double cornerNormalY = cornerNormalDirY / cornerNormalLen;
 

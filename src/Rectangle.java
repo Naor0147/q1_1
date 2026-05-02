@@ -91,14 +91,14 @@ public class Rectangle {
 
     /**
      * Gets the left top corner of the rectangle.
-     * @return
+     * @return the left top corner pount
      */
     public Point getLeftTop() {
         return this.pointLeftTop;
     }
     /**
      * Gets the right bottom corner of the rectangle.
-     * @return
+     * @return the right botom cornr point
      */
     public Point getRightBottom() {
         return this.pointRightBottom;

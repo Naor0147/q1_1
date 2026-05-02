@@ -42,7 +42,7 @@ public class BouncingBallAnimation {
         Sleeper sleeper = new Sleeper();
         Ball ball = new Ball(start, GameConstants.DEFAULT_BALL_RADIUS, java.awt.Color.BLACK);
         ball.setVelocity(dx, dy);
-        //my obstacles
+        // my obstacles
         Rectangle bounds = new Rectangle(0, 0, GameConstants.WINDOW_WIDTH, GameConstants.WINDOW_HEIGHT);
         ball.addObstacles(bounds.getLines());
 
@@ -54,6 +54,5 @@ public class BouncingBallAnimation {
             sleeper.sleepFor(GameConstants.FRAME_DELAY_MS);
         }
     }
-
 
 }

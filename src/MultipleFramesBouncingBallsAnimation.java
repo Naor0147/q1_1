@@ -34,26 +34,24 @@ public class MultipleFramesBouncingBallsAnimation {
         Rectangle windowBounds = new Rectangle(0, 0, GameConstants.WINDOW_WIDTH, GameConstants.WINDOW_HEIGHT);
         Rectangle greyRect = new Rectangle(50, 50, 500, 500);
         greyRect.setColor(java.awt.Color.GRAY);
-        Rectangle yellowRect =new Rectangle(450,450,600,600);
+        Rectangle yellowRect = new Rectangle(450, 450, 600, 600);
         yellowRect.setColor(java.awt.Color.YELLOW);
         Ball[] balls = GameEngine.createValidBallsArr(intArray);
 
-        Rectangle[] arrayObs= {greyRect,yellowRect};
+        Rectangle[] arrayObs = {greyRect, yellowRect};
 
-        int ballsLength = balls.length; 
-        int n=0 ;
+        int ballsLength = balls.length;
+        int n = 0;
         for (Ball ball : balls) {
-            if (n<ballsLength/2) {
-                ball.setPoint(GameEngine.createRandomPointInRect(greyRect,ball.getSize()));
-            }
-            else
-            {   
-                Point p =GameEngine.createRandomPointInRectAndOutSideObstacls(windowBounds,arrayObs,ball.getSize());
+            if (n < ballsLength / 2) {
+                ball.setPoint(GameEngine.createRandomPointInRect(greyRect, ball.getSize()));
+            } else {
+                Point p = GameEngine.createRandomPointInRectAndOutSideObstacls(windowBounds, arrayObs, ball.getSize());
                 ball.setPoint(p);
             }
-            ball.addObstacles(windowBounds.getLines());
-            ball.addObstacles(greyRect.getLines());
-            ball.addObstacles(yellowRect.getLines());
+                ball.addObstacles(windowBounds.getLines());
+                ball.addObstacles(greyRect.getLines());
+                ball.addObstacles(yellowRect.getLines());
             ball.setVelocity(GameEngine.getVelocityFromRadius(ball.getSize()));
             n++;
         }
@@ -72,11 +70,6 @@ public class MultipleFramesBouncingBallsAnimation {
             gui.show(surface);
             sleeper.sleepFor(GameConstants.FRAME_DELAY_MS);
         }
-    }   
-
-
-
-
-    
+    }
 
 }

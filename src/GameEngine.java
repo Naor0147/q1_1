@@ -105,7 +105,7 @@ public final class GameEngine {
         }
         int[] intArray = new int[args.length];
         for (int i = 0; i < args.length; i++) {
-            intArray[i] = (int) Double.parseDouble(args[i]);
+                intArray[i] = (int) Double.parseDouble(args[i]);
             if (intArray[i] < 0) {
                 System.out.println("all integers must be bigger or eqaul to 0");
                 return null;
@@ -159,8 +159,7 @@ public final class GameEngine {
     /**
      * Returns a random point in a certain area and outside of obstacles.
      *
-     * @param p1        the first corner of the bounding rectangle
-     * @param p2        the second corner of the bounding rectangle
+     * @param windowRectangle the boundry rectangle to sarch within
      * @param radius    the radius of the ball
      * @param obstacles array of obstacles to avoid
      * @return a random Point within the valid area and outside obstacles
@@ -200,8 +199,8 @@ public final class GameEngine {
     }
 
     /**
-     * create a random point insde a rect
-     * 
+     * creat a randm point insde a rect.
+     *
      * @param rect      to be insde
      * @param threshold to make sure the point is not to close to the edge of the
      *                  rect
