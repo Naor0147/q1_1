@@ -34,7 +34,7 @@ public class MultipleFramesBouncingBallsAnimation {
         yellowRect.setColor(java.awt.Color.YELLOW);
         Ball[] balls = GameEngine.createValidBallsArr(intArray);
 
-        Rectangle[] arrayObs = { greyRect, yellowRect };
+        Rectangle[] arrayObs = {greyRect, yellowRect};
 
         int ballsLength = balls.length;
         int n = 0;
